@@ -1,0 +1,36 @@
+server:
+  port: 8001
+#
+dbBaseDir: D:/Java/derby  #���ݿ�ĸ�·�� jdbc:derby:D:/Java/derby/fabric
+
+spring:
+  datasource:
+    jdbc-url: jdbc:derby:${dbBaseDir}/fabric;create=true
+    type: com.alibaba.druid.pool.DruidDataSource
+    name: generator
+    username: root
+    password: root
+    driver-class-name: org.apache.derby.jdbc.EmbeddedDriver
+    minIdle: 5
+    maxActive: 100
+    initialSize: 10
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 1 from sysibm.sysdummy1
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+  thymeleaf:
+    prefix: classpath:/web
+    mode: HTML
+  mvc:
+    static-path-pattern: /**
+  web:
+    resources:
+      static-locations: classpath:/web
+
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  configuration:
+    map-underscore-to-camel-case: true

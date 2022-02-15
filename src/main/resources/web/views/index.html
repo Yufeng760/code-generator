@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/element-ui.css">
+    <script src="../js/lib/vue@v2.6.14-min.js"></script>
+    <script src="../js/lib/element-ui.js"></script>
+    <script src="../js/lib/axios.js"></script>
+    <script src="../js/request.js"></script>
+    <script src="../js/api.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h3>指标处理类代码生成</h3>
+        <p>
+            <el-button type="primary" size="default" plain @click="showDialog = true">新增</el-button>
+            <el-button type="success" size="default" @click="handleExport()">导出</el-button>
+        </p>
+        <el-table :data="list" border stripe @selection-change="handleSelectionChange">
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column prop="id" label="主键"></el-table-column>
+            <el-table-column prop="indicatorName" label="指标名称"></el-table-column>
+            <el-table-column prop="packageName" label="包路径"></el-table-column>
+            <el-table-column prop="indicatorClassName" label="类名称"></el-table-column>
+            <el-table-column prop="indicatorConfigClassName" label="配置类名称（建议全部大写）"></el-table-column>
+            <el-table-column prop="exportExcelClassName" label="Excel导出模板类名称"></el-table-column>
+            <el-table-column label="操作">
+                <el-button type="danger" size="default">删除</el-button>
+            </el-table-column>
+        </el-table>
+        <el-dialog title="新增指标处理类" :visible.sync="showDialog" width="50%">
+            <el-form :model="genIndicatorForm" ref="genIndicatorForm" :rules="rules" label-width="180px" :inline="false"
+                size="normal">
+                <el-form-item prop="indicatorName" label="指标名称">
+                    <el-input v-model="genIndicatorForm.indicatorName"></el-input>
+                </el-form-item>
+                <el-form-item prop="packageName" label="包路径">
+                    <el-input v-model="genIndicatorForm.packageName"></el-input>
+                </el-form-item>
+                <el-form-item prop="indicatorClassName" label="类名称">
+                    <el-input v-model="genIndicatorForm.indicatorClassName"></el-input>
+                </el-form-item>
+                <el-form-item prop="indicatorConfigClassName" label="配置类名称">
+                    <el-input v-model="genIndicatorForm.indicatorConfigClassName"></el-input>
+                </el-form-item>
+                <el-form-item prop="exportExcelClassName" label="Excel导出模板类名称">
+                    <el-input v-model="genIndicatorForm.exportExcelClassName"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer">
+                <el-button @click="showDialog = false">取消</el-button>
+                <el-button type="primary" @click="handleInsert">确认</el-button>
+            </span>
+        </el-dialog>
+
+    </div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                list: [],
+                selectionList:[],
+                showDialog: false,
+                genIndicatorForm:{
+                    id:'',
+                    indicatorName:'',
+                    packageName:'',
+                    indicatorClassName:'',
+                    indicatorConfigClassName:'',
+                    exportExcelClassName:''
+                },
+                rules: {
+                    indicatorName: [
+                        { required: true, message: '请输入指标名称', trigger: 'blur' }
+                    ],
+                    packageName: [
+                        { required: true, message: '请输入报名', trigger: 'blur' }
+                    ],
+                    indicatorClassName: [
+                        { required: true, message: '请输入类名', trigger: 'blur' }
+                    ],
+                    indicatorConfigClassName: [
+                        { required: true, message: '请输入配置类名称', trigger: 'blur' }
+                    ],
+                    exportExcelClassName: [
+                        { required: true, message: '请输入excel导出模板类名', trigger: 'blur' }
+                    ],
+                }
+            }
+        },
+        mounted() {
+            this.getList();
+        },
+        methods: {
+            getList() {
+                getGenIndictaorList().then(res => {
+                    console.log(res);
+                    this.list = res.data;
+                });
+            },
+            handleSelectionChange(val){
+                this.selectionList = val;
+            },
+            handleExport(){
+                exportGenIndictaor(this.selectionList).then(res=>{
+                    console.log(res);
+                });
+            },
+            handleInsert(){
+                console.log(this.genIndicatorForm)
+                insertGenIndictaor(this.genIndicatorForm).then(res=>{
+                    console.log(res);
+                });
+            }
+        }
+    });
+</script>
+
+</html>
